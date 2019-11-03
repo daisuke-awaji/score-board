@@ -9,40 +9,54 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
-
-const initData = [
-  {
-    time: 0,
-    teamA: 30,
-    teamB: 30,
-    teamC: 30
-  }
-];
+import { API, graphqlOperation } from "aws-amplify";
+import { listPoints } from "./graphql/queries";
+import { onCreatePoint } from "./graphql/subscriptions";
 
 export default class ScoreChart extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      data: initData
+      data: []
     };
 
     this.fetchData = this.fetchData.bind(this);
   }
   componentDidMount() {
-    setInterval(this.fetchData, 1000);
+    this.fetchData();
+    this.subscribeData();
   }
 
-  fetchData() {
-    const newData = this.state.data.slice();
-    newData.push({
-      time: newData[newData.length - 1].time + 1,
-      teamA: newData[newData.length - 1].teamA + this.rand(-10, 30),
-      teamB: newData[newData.length - 1].teamB + this.rand(-10, 30),
-      teamC: newData[newData.length - 1].teamC + this.rand(-10, 30)
+  async subscribeData() {
+    API.graphql(graphqlOperation(onCreatePoint)).subscribe({
+      next: eventData => {
+        const point = eventData.value.data.onCreatePoint;
+        console.log("eventData.value.data.onCreatePoint: ", point);
+        const tmp = this.state.data.slice();
+        tmp.push(point);
+        this.setState({
+          data: tmp
+        });
+      }
     });
-    this.setState({
-      data: newData
-    });
+  }
+
+  async fetchData() {
+    try {
+      const points = await API.graphql(graphqlOperation(listPoints));
+      console.log(points.data.listPoints.items);
+      const items = points.data.listPoints.items;
+      items.sort((a, b) => {
+        if (a.createdAt > b.createdAt) return 1;
+        if (a.createdAt < b.createdAt) return -1;
+        return 0;
+      });
+      this.setState({
+        data: items
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   rand(min, max) {
@@ -66,7 +80,7 @@ export default class ScoreChart extends PureComponent {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="time" type="number" domain={[0, 100]} />
+            <XAxis dataKey="createdAt" type="category" domain={[0, 100]} />
             <YAxis />
             <Tooltip />
             <Legend />

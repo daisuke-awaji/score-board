@@ -1,0 +1,14 @@
+{
+    "providers": {
+        "awscloudformation": {
+            "AuthRoleName": "scoreboard-20191103160207-authRole",
+            "UnauthRoleArn": "arn:aws:iam::703976800898:role/scoreboard-20191103160207-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::703976800898:role/scoreboard-20191103160207-authRole",
+            "Region": "ap-northeast-1",
+            "DeploymentBucketName": "scoreboard-20191103160207-deployment",
+            "UnauthRoleName": "scoreboard-20191103160207-unauthRole",
+            "StackName": "scoreboard-20191103160207",
+            "StackId": "arn:aws:cloudformation:ap-northeast-1:703976800898:stack/scoreboard-20191103160207/d9de4700-fe07-11e9-b6f7-0e36924addac"
+        }
+    }
+}

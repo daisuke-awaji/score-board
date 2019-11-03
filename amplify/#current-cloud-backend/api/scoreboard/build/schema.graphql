@@ -1,0 +1,119 @@
+type Point {
+  id: ID!
+  teamA: Int
+  teamB: Int
+  teamC: Int
+  createdAt: AWSDateTime
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelPointConnection {
+  items: [Point]
+  nextToken: String
+}
+
+input ModelStringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+input ModelIDFilterInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+input ModelIntFilterInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  contains: Int
+  notContains: Int
+  between: [Int]
+}
+
+input ModelFloatFilterInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  contains: Float
+  notContains: Float
+  between: [Float]
+}
+
+input ModelBooleanFilterInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelPointFilterInput {
+  id: ModelIDFilterInput
+  teamA: ModelIntFilterInput
+  teamB: ModelIntFilterInput
+  teamC: ModelIntFilterInput
+  createdAt: ModelStringFilterInput
+  and: [ModelPointFilterInput]
+  or: [ModelPointFilterInput]
+  not: ModelPointFilterInput
+}
+
+type Query {
+  getPoint(id: ID!): Point
+  listPoints(filter: ModelPointFilterInput, limit: Int, nextToken: String): ModelPointConnection
+}
+
+input CreatePointInput {
+  teamA: Int
+  teamB: Int
+  teamC: Int
+  createdAt: AWSDateTime
+}
+
+input UpdatePointInput {
+  id: ID!
+  teamA: Int
+  teamB: Int
+  teamC: Int
+  createdAt: AWSDateTime
+}
+
+input DeletePointInput {
+  id: ID
+}
+
+type Mutation {
+  createPoint(input: CreatePointInput!): Point
+  updatePoint(input: UpdatePointInput!): Point
+  deletePoint(input: DeletePointInput!): Point
+}
+
+type Subscription {
+  onCreatePoint: Point @aws_subscribe(mutations: ["createPoint"])
+  onUpdatePoint: Point @aws_subscribe(mutations: ["updatePoint"])
+  onDeletePoint: Point @aws_subscribe(mutations: ["deletePoint"])
+}

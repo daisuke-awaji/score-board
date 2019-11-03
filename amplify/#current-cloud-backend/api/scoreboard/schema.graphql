@@ -1,0 +1,7 @@
+type Point @model {
+  id: ID!
+  teamA: Int
+  teamB: Int
+  teamC: Int
+  createdAt: AWSDateTime
+}

@@ -1,0 +1,5 @@
+type Point @model {
+  id: ID!
+  points: AWSJSON
+  createdAt: AWSDateTime
+}

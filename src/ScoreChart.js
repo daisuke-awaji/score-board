@@ -9,40 +9,71 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
-
-const initData = [
-  {
-    time: 0,
-    teamA: 30,
-    teamB: 30,
-    teamC: 30
-  }
-];
+import { API, graphqlOperation } from "aws-amplify";
+import { listPoints } from "./graphql/queries";
+import { onCreatePoint } from "./graphql/subscriptions";
 
 export default class ScoreChart extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      data: initData
+      data: [], // expected [{teamA: 10, teamB: 20, createdAt: 2019-11-07T15:40:51.155Z}, ...]
+      dataKey: [] // expected [teamA", "teamB", ...]
     };
-
+    this.strokeColors = [
+      "#82ca9d",
+      "#8884d8",
+      "#ed26a0",
+      "#281e1e",
+      "#98fb98",
+      "#cfcf3f",
+      "#313125"
+    ];
     this.fetchData = this.fetchData.bind(this);
   }
   componentDidMount() {
-    setInterval(this.fetchData, 1000);
+    this.fetchData();
+    this.subscribeData();
   }
 
-  fetchData() {
-    const newData = this.state.data.slice();
-    newData.push({
-      time: newData[newData.length - 1].time + 1,
-      teamA: newData[newData.length - 1].teamA + this.rand(-10, 30),
-      teamB: newData[newData.length - 1].teamB + this.rand(-10, 30),
-      teamC: newData[newData.length - 1].teamC + this.rand(-10, 30)
+  async subscribeData() {
+    API.graphql(graphqlOperation(onCreatePoint)).subscribe({
+      next: eventData => {
+        const data = this.state.data.slice();
+        const item = eventData.value.data.onCreatePoint;
+        console.log("eventData.value.data.onCreatePoint: ", item);
+        const json = JSON.parse(item.points);
+        json["createdAt"] = item.createdAt;
+        data.push(json);
+        this.setState({
+          data: data
+        });
+      }
     });
-    this.setState({
-      data: newData
-    });
+  }
+
+  async fetchData() {
+    try {
+      const points = await API.graphql(graphqlOperation(listPoints));
+      const items = points.data.listPoints.items;
+      items.sort((a, b) => {
+        if (a.createdAt > b.createdAt) return 1;
+        if (a.createdAt < b.createdAt) return -1;
+        return 0;
+      });
+      const data = [];
+      items.map(item => {
+        const json = JSON.parse(item.points);
+        this.setState({ dataKey: Object.keys(json) });
+        json["createdAt"] = item.createdAt;
+        return data.push(json);
+      });
+      this.setState({
+        data: data
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   rand(min, max) {
@@ -50,6 +81,17 @@ export default class ScoreChart extends PureComponent {
   }
 
   render() {
+    const LineList = this.state.dataKey.map((key, index) => {
+      return (
+        <Line
+          type="monotone"
+          strokeWidth="[{ x: 24, y: 24, value: 480 }]"
+          dataKey={key.toString()}
+          stroke={this.strokeColors[index]}
+          key={index}
+        />
+      );
+    });
     return (
       <div>
         <ResponsiveContainer width="95%" height={400}>
@@ -66,13 +108,11 @@ export default class ScoreChart extends PureComponent {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="time" type="number" domain={[0, 100]} />
+            <XAxis dataKey="createdAt" type="category" domain={[0, 100]} />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="teamA" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="teamB" stroke="#8884d8" />
-            <Line type="monotone" dataKey="teamC" stroke="#ed26a0" />
+            {LineList}
           </LineChart>
         </ResponsiveContainer>
       </div>

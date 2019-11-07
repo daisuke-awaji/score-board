@@ -84,10 +84,10 @@
 				"TemplateURL": "https://s3.amazonaws.com/scoreboard-20191103160207-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
 					"AppSyncApiName": "scoreboard",
-					"schemaGraphql": "s3://scoreboard-20191103160207-deployment/amplify-appsync-files/schema.graphql.1572768371514",
+					"schemaGraphql": "s3://scoreboard-20191103160207-deployment/amplify-appsync-files/schema.graphql.1573139386949",
 					"ResolverBucket": "scoreboard-20191103160207-deployment",
 					"ResolverRootKey": "amplify-appsync-files",
-					"DeploymentTimestamp": "1572768371514"
+					"DeploymentTimestamp": "1573139386949"
 				}
 			}
 		}

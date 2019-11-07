@@ -1,8 +1,6 @@
 type Point {
   id: ID!
-  teamA: Int
-  teamB: Int
-  teamC: Int
+  points: AWSJSON
   createdAt: AWSDateTime
 }
 
@@ -73,9 +71,7 @@ input ModelBooleanFilterInput {
 
 input ModelPointFilterInput {
   id: ModelIDFilterInput
-  teamA: ModelIntFilterInput
-  teamB: ModelIntFilterInput
-  teamC: ModelIntFilterInput
+  points: ModelStringFilterInput
   createdAt: ModelStringFilterInput
   and: [ModelPointFilterInput]
   or: [ModelPointFilterInput]
@@ -88,17 +84,13 @@ type Query {
 }
 
 input CreatePointInput {
-  teamA: Int
-  teamB: Int
-  teamC: Int
+  points: AWSJSON
   createdAt: AWSDateTime
 }
 
 input UpdatePointInput {
   id: ID!
-  teamA: Int
-  teamB: Int
-  teamC: Int
+  points: AWSJSON
   createdAt: AWSDateTime
 }
 

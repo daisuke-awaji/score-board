@@ -4,9 +4,7 @@
 export const getPoint = `query GetPoint($id: ID!) {
   getPoint(id: $id) {
     id
-    teamA
-    teamB
-    teamC
+    points
     createdAt
   }
 }
@@ -19,9 +17,7 @@ export const listPoints = `query ListPoints(
   listPoints(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      teamA
-      teamB
-      teamC
+      points
       createdAt
     }
     nextToken

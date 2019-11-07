@@ -17,9 +17,18 @@ export default class ScoreChart extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: [], // expected [{teamA: 10, teamB: 20, createdAt: 2019-11-07T15:40:51.155Z}, ...]
+      dataKey: [] // expected [teamA", "teamB", ...]
     };
-
+    this.strokeColors = [
+      "#82ca9d",
+      "#8884d8",
+      "#ed26a0",
+      "#281e1e",
+      "#98fb98",
+      "#cfcf3f",
+      "#313125"
+    ];
     this.fetchData = this.fetchData.bind(this);
   }
   componentDidMount() {
@@ -30,12 +39,14 @@ export default class ScoreChart extends PureComponent {
   async subscribeData() {
     API.graphql(graphqlOperation(onCreatePoint)).subscribe({
       next: eventData => {
-        const point = eventData.value.data.onCreatePoint;
-        console.log("eventData.value.data.onCreatePoint: ", point);
-        const tmp = this.state.data.slice();
-        tmp.push(point);
+        const data = this.state.data.slice();
+        const item = eventData.value.data.onCreatePoint;
+        console.log("eventData.value.data.onCreatePoint: ", item);
+        const json = JSON.parse(item.points);
+        json["createdAt"] = item.createdAt;
+        data.push(json);
         this.setState({
-          data: tmp
+          data: data
         });
       }
     });
@@ -44,15 +55,21 @@ export default class ScoreChart extends PureComponent {
   async fetchData() {
     try {
       const points = await API.graphql(graphqlOperation(listPoints));
-      console.log(points.data.listPoints.items);
       const items = points.data.listPoints.items;
       items.sort((a, b) => {
         if (a.createdAt > b.createdAt) return 1;
         if (a.createdAt < b.createdAt) return -1;
         return 0;
       });
+      const data = [];
+      items.map(item => {
+        const json = JSON.parse(item.points);
+        this.setState({ dataKey: Object.keys(json) });
+        json["createdAt"] = item.createdAt;
+        return data.push(json);
+      });
       this.setState({
-        data: items
+        data: data
       });
     } catch (e) {
       console.log(e);
@@ -64,6 +81,17 @@ export default class ScoreChart extends PureComponent {
   }
 
   render() {
+    const LineList = this.state.dataKey.map((key, index) => {
+      return (
+        <Line
+          type="monotone"
+          strokeWidth="[{ x: 24, y: 24, value: 480 }]"
+          dataKey={key.toString()}
+          stroke={this.strokeColors[index]}
+          key={index}
+        />
+      );
+    });
     return (
       <div>
         <ResponsiveContainer width="95%" height={400}>
@@ -84,9 +112,7 @@ export default class ScoreChart extends PureComponent {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="teamA" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="teamB" stroke="#8884d8" />
-            <Line type="monotone" dataKey="teamC" stroke="#ed26a0" />
+            {LineList}
           </LineChart>
         </ResponsiveContainer>
       </div>

@@ -25,8 +25,8 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/scoreboard-20191103160207-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apiscoreboard"
 			},
-			"lastPushTimeStamp": "2019-11-03T08:37:57.924Z",
-			"lastPushDirHash": "II9aZrgus7tPqevYgDNzwRan8Tc="
+			"lastPushTimeStamp": "2019-11-07T15:11:41.222Z",
+			"lastPushDirHash": "JNJR3jiyxe8BPRV3NMAW4rftfCE="
 		}
 	}
 }

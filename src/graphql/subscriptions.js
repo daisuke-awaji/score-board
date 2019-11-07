@@ -4,9 +4,7 @@
 export const onCreatePoint = `subscription OnCreatePoint {
   onCreatePoint {
     id
-    teamA
-    teamB
-    teamC
+    points
     createdAt
   }
 }
@@ -14,9 +12,7 @@ export const onCreatePoint = `subscription OnCreatePoint {
 export const onUpdatePoint = `subscription OnUpdatePoint {
   onUpdatePoint {
     id
-    teamA
-    teamB
-    teamC
+    points
     createdAt
   }
 }
@@ -24,9 +20,7 @@ export const onUpdatePoint = `subscription OnUpdatePoint {
 export const onDeletePoint = `subscription OnDeletePoint {
   onDeletePoint {
     id
-    teamA
-    teamB
-    teamC
+    points
     createdAt
   }
 }

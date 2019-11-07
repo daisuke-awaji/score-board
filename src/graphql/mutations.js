@@ -4,9 +4,7 @@
 export const createPoint = `mutation CreatePoint($input: CreatePointInput!) {
   createPoint(input: $input) {
     id
-    teamA
-    teamB
-    teamC
+    points
     createdAt
   }
 }
@@ -14,9 +12,7 @@ export const createPoint = `mutation CreatePoint($input: CreatePointInput!) {
 export const updatePoint = `mutation UpdatePoint($input: UpdatePointInput!) {
   updatePoint(input: $input) {
     id
-    teamA
-    teamB
-    teamC
+    points
     createdAt
   }
 }
@@ -24,9 +20,7 @@ export const updatePoint = `mutation UpdatePoint($input: UpdatePointInput!) {
 export const deletePoint = `mutation DeletePoint($input: DeletePointInput!) {
   deletePoint(input: $input) {
     id
-    teamA
-    teamB
-    teamC
+    points
     createdAt
   }
 }

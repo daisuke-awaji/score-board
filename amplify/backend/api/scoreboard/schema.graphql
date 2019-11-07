@@ -1,7 +1,5 @@
 type Point @model {
   id: ID!
-  teamA: Int
-  teamB: Int
-  teamC: Int
+  points: AWSJSON
   createdAt: AWSDateTime
 }
